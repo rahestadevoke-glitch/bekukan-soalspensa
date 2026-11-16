@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bekukan Kode Soal</title>
+<style>
+  :root{
+    --bg:#e9f6f6; --bg2:#d3eef0; --card:#ffffff; --ink:#0c2f38; --mut:#5b7f88; --line:#cfe5e8;
+    --biru:#0f8f9d; --biru2:#14b3bd; --es:#0b6f8a; --es-bg:#def3f7;
+    --ok:#0f7a55; --ok-bg:#d9f5e9; --bad:#b4233a; --bad-bg:#fde4e8;
+    --hero1:#0a5c6b; --hero2:#12a5b0; --shadow:0 10px 30px -12px rgba(10,92,107,.28);
+    --focus:#f2a516;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#071a1f; --bg2:#0a2a31; --card:#0e262d; --ink:#e3f4f5; --mut:#8db4ba; --line:#1c4049;
+      --biru:#2ec4cf; --biru2:#4fdbe3; --es:#7fd8ee; --es-bg:#0f3a47;
+      --ok:#6fe3b4; --ok-bg:#0f3a2c; --bad:#ffa3b1; --bad-bg:#3d1a22;
+      --hero1:#0a4a56; --hero2:#0e8590; --shadow:0 10px 30px -12px rgba(0,0,0,.6); }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--ink);font:15px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif;
+    background:linear-gradient(180deg,var(--bg2) 0,var(--bg) 340px) fixed,var(--bg);min-height:100vh}
+  .wrap{max-width:940px;margin:0 auto;padding:22px 14px 60px}
+
+  /* Hero */
+  .hero{position:relative;overflow:hidden;border-radius:22px;padding:28px 26px 30px;margin-bottom:18px;color:#fff;
+    background:linear-gradient(120deg,var(--hero1),var(--hero2));box-shadow:var(--shadow)}
+  .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.09)}
+  .hero::before{width:260px;height:260px;right:-60px;top:-110px}
+  .hero::after{width:170px;height:170px;right:110px;bottom:-110px}
+  .hero-in{position:relative;display:flex;gap:16px;align-items:center}
+  .ikon{flex:none;width:54px;height:54px;border-radius:16px;display:grid;place-items:center;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3)}
+  .ikon svg{width:30px;height:30px}
+  h1{font-size:25px;line-height:1.2;margin:0 0 4px;font-weight:700;letter-spacing:-.01em}
+  .sub{margin:0;color:rgba(255,255,255,.86);max-width:58ch}
+  .sub b{color:#fff}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+
+  input[type=password],input[type=number]{padding:11px 13px;border:1.5px solid var(--line);border-radius:12px;
+    background:var(--bg);color:var(--ink);font:inherit;transition:border-color .15s,box-shadow .15s}
+  input[type=password]{flex:1 1 220px;min-width:0}
+  input[type=number]{width:84px;text-align:center}
+  input[type=password]:focus,input[type=number]:focus{border-color:var(--biru);box-shadow:0 0 0 4px color-mix(in srgb,var(--biru) 22%,transparent);outline:0}
+
+  button{padding:10px 18px;border:0;border-radius:12px;font:inherit;font-weight:600;cursor:pointer;color:#fff;
+    background:linear-gradient(135deg,var(--biru),var(--biru2));
+    box-shadow:0 6px 14px -6px color-mix(in srgb,var(--biru) 70%,transparent);
+    transition:transform .12s,box-shadow .12s,filter .12s}
+  button:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.05)}
+  button:active:not(:disabled){transform:translateY(0)}
+  button.es{background:linear-gradient(135deg,#0b5f7a,var(--es));color:#fff}
+  @media (prefers-color-scheme: dark){ button{color:#04242a} button.es{background:linear-gradient(135deg,#3aa9c9,#7fd8ee);color:#04242a} }
+  button.lepas{background:transparent;color:var(--ok);border:1.5px solid var(--ok);box-shadow:none}
+  button.lepas:hover:not(:disabled){background:var(--ok-bg)}
+  button.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+  button.ghost:hover:not(:disabled){border-color:var(--biru);color:var(--biru)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  button:focus-visible,input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+  .bar{position:sticky;top:10px;z-index:5;backdrop-filter:blur(10px);
+    background:color-mix(in srgb,var(--card) 90%,transparent)}
+  .bar .row{justify-content:space-between}
+  .grp{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .grp .grp{padding:5px 6px 5px 10px;border:1.5px solid var(--line);border-radius:14px;background:var(--bg)}
+  .grp .grp input[type=number]{border:0;background:transparent;padding:6px 2px;width:56px}
+  .grp .grp input[type=number]:focus{box-shadow:none}
+  .grp .grp button{padding:8px 14px}
+
+  .tbl{width:100%;border-collapse:separate;border-spacing:0}
+  .tbl th,.tbl td{padding:12px 10px;text-align:left;border-bottom:1px solid var(--line)}
+  .tbl th{font-size:13px;color:var(--mut);font-weight:600;background:var(--bg);white-space:nowrap}
+  .tbl th:first-child{border-top-left-radius:10px}.tbl th:last-child{border-top-right-radius:10px}
+  .tbl tbody tr{transition:background .15s}
+  .tbl tbody tr:hover td{background:color-mix(in srgb,var(--biru) 6%,transparent)}
+  .tbl tr.beku td{background:var(--es-bg)}
+  .tbl tr:last-child td{border-bottom:0}
+  .kode{font-weight:700;font-variant-numeric:tabular-nums;color:var(--hero1)}
+  @media (prefers-color-scheme: dark){ .kode{color:var(--biru2)} }
+
+  .lencana{display:inline-flex;align-items:center;gap:6px;padding:3px 12px;border-radius:99px;font-size:13px;font-weight:600}
+  .lencana::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+  .lencana.aktif{background:var(--ok-bg);color:var(--ok)}
+  .lencana.beku{background:var(--es-bg);color:var(--es);border:1px solid var(--es)}
+  .sisa{font-variant-numeric:tabular-nums;color:var(--es);font-weight:600;white-space:nowrap}
+  .scroll{overflow-x:auto}
+
+  #pesan{min-height:22px;margin:10px 4px;font-weight:600}
+  #pesan.ok{color:var(--ok)} #pesan.err{color:var(--bad)}
+  .hint{color:var(--mut);font-size:13px;margin:10px 0 0}
+  input[type=checkbox]{width:18px;height:18px;accent-color:var(--biru);cursor:pointer}
+  .hide{display:none}
+
+  @media (max-width:560px){
+    .hero{padding:22px 18px}.ikon{display:none}h1{font-size:21px}
+    .bar{position:static}
+  }
+  /* ── Animasi ── */
+  :root{--kilau:rgba(255,255,255,.9)}
+  @media (prefers-color-scheme: dark){ :root{--kilau:rgba(127,216,238,.35)} button{--spin:#04242a} }
+  @keyframes turun{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+  @keyframes putar{from{transform:rotate(-120deg) scale(.6);opacity:0}to{transform:none;opacity:1}}
+  @keyframes naik{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes masuk{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes keluar{to{opacity:0;transform:translateY(-12px) scale(.97)}}
+  @keyframes goyang{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-8px)}40%,60%{transform:translateX(8px)}}
+  @keyframes pop{0%{opacity:0;transform:scale(.85)}60%{transform:scale(1.04)}100%{opacity:1;transform:none}}
+  @keyframes kilau{from{background-position:130% 0}to{background-position:-30% 0}}
+  @keyframes denyut{50%{opacity:.45}}
+  @keyframes titik{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--es) 55%,transparent)}70%,100%{box-shadow:0 0 0 7px transparent}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes centang{from{transform:scale(0)}60%{transform:scale(1.3)}to{transform:scale(1)}}
+
+  /* pembuka halaman */
+  .hero{animation:turun .7s cubic-bezier(.2,.7,.2,1) backwards}
+  .ikon svg{animation:putar 1s cubic-bezier(.2,.8,.2,1) .25s backwards;transition:transform .6s}
+  .ikon:hover svg{transform:rotate(60deg)}
+  #boxLogin{animation:naik .6s cubic-bezier(.2,.7,.2,1) .15s backwards}
+
+  /* login: salah = goyang, benar = kartu keluar lalu panel masuk */
+  #boxLogin.goyang,.goyang{animation:goyang .5s cubic-bezier(.36,.07,.19,.97)}
+  #boxLogin.keluar{animation:keluar .32s ease forwards}
+  #panel.masuk{animation:masuk .5s cubic-bezier(.2,.7,.2,1) backwards}
+  input.salah{border-color:var(--bad)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--bad) 20%,transparent)!important}
+
+  /* tabel */
+  .tbl td{transition:background-color .25s}
+  .tbl tbody tr:has(.pilih:checked) td{background:color-mix(in srgb,var(--biru) 11%,transparent)}
+  .tbl tr.baru td{animation:naik .45s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--i,0) * 45ms)}
+  .tbl tr.berubah td{background-image:linear-gradient(100deg,transparent 35%,var(--kilau) 50%,transparent 65%);background-size:300% 100%;animation:kilau 1.3s ease-out}
+  .lencana.beku::before{animation:titik 2s infinite}
+  .sisa.mepet{color:var(--bad);animation:denyut 1s ease-in-out infinite}
+
+  /* pesan */
+  #pesan.ok{animation:pop .45s cubic-bezier(.2,.9,.3,1.2)}
+  #pesan.ok::before{content:"✓";display:inline-block;margin-right:6px;animation:centang .5s .1s backwards}
+  #pesan.err{animation:goyang .5s cubic-bezier(.36,.07,.19,.97)}
+
+  /* tombol memproses */
+  button.memuat{position:relative;color:transparent!important;pointer-events:none}
+  button.memuat:disabled{opacity:1}
+  button.memuat::after{content:"";position:absolute;inset:0;margin:auto;width:18px;height:18px;border-radius:50%;border:2.5px solid var(--spin,#fff);border-right-color:transparent;animation:spin .7s linear infinite}
+  button.lepas{--spin:var(--ok)}
+  button.ghost{--spin:var(--biru)}
+
+  @media (prefers-reduced-motion:reduce){ *,*::before,*::after{transition:none!important;animation-duration:.001ms!important;animation-iteration-count:1!important} }
+
+  /* ── Ramah seluler ── */
+  .semua{display:inline-flex;align-items:center;gap:10px;cursor:pointer}
+  .tsm{display:none}
+  .tbl tbody tr:has(.pilih){cursor:pointer}
+  button,.tbl tbody tr{-webkit-tap-highlight-color:transparent}
+
+  @media (max-width:640px){
+    .wrap{padding:12px max(12px,env(safe-area-inset-right)) 40px max(12px,env(safe-area-inset-left))}
+    .hero{padding:20px 18px;border-radius:18px;margin-bottom:12px}
+    .ikon{display:none}
+    h1{font-size:20px}
+    .sub{font-size:14px}
+    .card{padding:14px;border-radius:16px}
+    input[type=password],input[type=number]{font-size:16px}
+    button{min-height:46px}
+    input[type=checkbox]{width:22px;height:22px}
+
+    #boxLogin .row>*{flex:1 1 100%}
+    .bar{position:static;backdrop-filter:none}
+    .bar .row{flex-direction:column;align-items:stretch}
+    .bar .grp{display:grid;grid-template-columns:1fr 1fr;width:100%}
+    #btnBeku{order:1}
+    #btnLepas{order:2}
+    .bar .grp .grp{order:3;grid-column:1/-1;display:flex;padding:6px 6px 6px 12px}
+    .bar .grp .grp button{flex:1;min-height:42px}
+    .bar .grp .grp input[type=number]{width:64px;font-size:16px}
+    .hint{font-size:12.5px}
+
+    /* tabel menjadi daftar kartu */
+    .card.scroll{padding:8px;overflow:visible}
+    .tbl,.tbl thead,.tbl tbody{display:block}
+    .tbl thead tr{display:block;padding:6px 8px 4px}
+    .tbl th{display:none;border:0;background:none;padding:0}
+    .tbl th:first-child{display:block}
+    .tsm{display:inline;font-weight:600;color:var(--mut);font-size:14px}
+    .tbl tbody tr{display:grid;grid-template-columns:auto 1fr auto;column-gap:12px;row-gap:2px;align-items:center;
+      padding:12px 14px;margin:8px 0;border:1.5px solid var(--line);border-radius:14px;background:var(--card);
+      transition:background-color .2s,border-color .2s}
+    .tbl tbody tr td{padding:0;border:0;background:transparent!important}
+    .tbl tbody tr.beku{background:var(--es-bg);border-color:var(--es)}
+    .tbl tbody tr:has(.pilih:checked){background:color-mix(in srgb,var(--biru) 12%,var(--card));border-color:var(--biru)}
+    .tbl tbody td:not([colspan]):nth-child(1){grid-column:1;grid-row:1/4}
+    .tbl tbody td:nth-child(2){grid-column:2;grid-row:1;font-size:17px}
+    .tbl tbody td:nth-child(3){grid-column:2;grid-row:2;color:var(--mut);font-size:14px}
+    .tbl tbody td:nth-child(4){grid-column:2;grid-row:3;color:var(--mut);font-size:13px}
+    .tbl tbody td:nth-child(4)::after{content:" soal"}
+    .tbl tbody td:nth-child(5){grid-column:3;grid-row:1;justify-self:end}
+    .tbl tbody td:nth-child(6){grid-column:3;grid-row:2/4;justify-self:end;align-self:center}
+    .tbl tbody td[colspan]{grid-column:1/-1;padding:10px 4px;color:var(--mut)}
+
+    /* animasi dipindah dari sel ke kartu */
+    .tbl tr.baru td{animation:none}
+    .tbl tbody tr.baru{animation:naik .45s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--i,0) * 45ms)}
+    .tbl tr.berubah td{animation:none!important;background-image:none!important}
+    .tbl tbody tr.berubah{background-image:linear-gradient(100deg,transparent 35%,var(--kilau) 50%,transparent 65%);background-size:300% 100%;animation:kilau 1.3s ease-out}
+  }
+
+  /* ── Tanggal beku ── */
+  input[type=datetime-local]{padding:9px 10px;border:0;border-radius:10px;background:transparent;color:var(--ink);font:inherit;color-scheme:light dark;min-width:0}
+  .grp .grp:focus-within{border-color:var(--biru);box-shadow:0 0 0 4px color-mix(in srgb,var(--biru) 22%,transparent)}
+  .ringkas{color:var(--es);font-weight:600;font-size:13px;margin:12px 0 0}
+  .ringkas:empty{display:none}
+  .ringkas.salah{color:var(--bad)}
+  @media (max-width:640px){
+    .bar .grp .grp{flex-wrap:wrap}
+    .bar .grp .grp input[type=datetime-local]{flex:1 1 200px;font-size:16px}
+    .bar .grp .grp button{flex:1 1 140px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="hero-in">
+      <div class="ikon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M4.5 6.5l15 11M19.5 6.5l-15 11M9 3.5l3 2.5 3-2.5M9 20.5l3-2.5 3 2.5"/></svg>
+      </div>
+      <div>
+        <h1>Bekukan Kode Soal</h1>
+        <p class="sub">Kode di kolom A sheet <b>soal</b> dipindah ke kolom AF, sehingga ujian tidak bisa dibuka siswa.</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- LOGIN -->
+  <div class="card" id="boxLogin">
+    <div class="row">
+      <input type="password" id="pass" placeholder="Password admin" autocomplete="current-password">
+      <button id="btnMasuk">Masuk</button>
+    </div>
+  </div>
+
+  <!-- PANEL -->
+  <div id="panel" class="hide">
+    <div class="card bar">
+      <div class="row">
+        <div class="grp">
+          <button id="btnBeku">Bekukan</button>
+          <span class="grp">
+            <input type="datetime-local" id="sampai" aria-label="Beku sampai tanggal dan jam">
+            <button id="btnBekuWaktu" class="es">Bekukan sementara</button>
+          </span>
+          <button id="btnLepas" class="lepas">Lepas beku</button>
+        </div>
+        <button id="btnRefresh" class="ghost">Muat ulang</button>
+      </div>
+      <p class="ringkas" id="ringkas" aria-live="polite"></p>
+      <p class="hint">Centang kode yang dipilih. “Bekukan sementara” membekukan sampai tanggal dan jam yang dipilih, lalu kode otomatis kembali ke kolom A.</p>
+    </div>
+
+    <div id="pesan" role="status"></div>
+
+    <div class="card scroll" id="tabel">
+      <table class="tbl">
+        <thead><tr>
+          <th><label class="semua"><input type="checkbox" id="semua" aria-label="Pilih semua"><span class="tsm">Pilih semua</span></label></th>
+          <th>Kode</th><th>Mata pelajaran</th><th>Soal</th><th>Status</th><th>Sisa waktu</th>
+        </tr></thead>
+        <tbody id="isi"><tr><td colspan="6">Memuat…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── KONFIGURASI (hardcode) ──
+const GAS = 'https://script.google.com/macros/s/AKfycbzzhNg4lbQtSAOprgmPkzqn48SJ1JMK_jwRmyEs_sRqILh9P4t2lV-IbOAvHGYyRfq5/exec';
+
+let PASS = '', DATA = [], OFFSET = 0, sibuk = false, PREV = null;
+const $ = id => document.getElementById(id);
+
+async function api(params){
+  const r = await fetch(GAS + '?' + new URLSearchParams(Object.assign({ pass: PASS }, params)));
+  return r.json();
+}
+
+function pesan(t, tipe){
+  const p = $('pesan'); p.textContent = t; p.className = tipe || '';
+  p.style.animation = 'none'; void p.offsetWidth; p.style.animation = '';
+}
+function goyangEl(el){ el.classList.remove('goyang'); void el.offsetWidth; el.classList.add('goyang'); }
+function goyang(){ goyangEl($('boxLogin')); const p = $('pass'); p.classList.add('salah'); p.focus(); p.select(); }
+function tampilPanel(){
+  const lg = $('boxLogin'), pn = $('panel');
+  if (!pn.classList.contains('hide') || lg.classList.contains('keluar')) return;
+  if (lg.classList.contains('hide')){ pn.classList.remove('hide'); return; }
+  lg.classList.add('keluar');
+  setTimeout(() => {
+    lg.classList.add('hide'); lg.classList.remove('keluar');
+    pn.classList.remove('hide', 'masuk'); void pn.offsetWidth; pn.classList.add('masuk');
+  }, 320);
+}
+
+function fmtSisa(ms){
+  if (ms <= 0) return 'habis…';
+  const s = Math.floor(ms / 1000), j = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), d = s % 60;
+  return (j ? j + ' j ' : '') + m + ' m ' + String(d).padStart(2, '0') + ' d';
+}
+
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function gambar(){
+  const tb = $('isi');
+  if (!DATA.length){ tb.innerHTML = '<tr><td colspan="6">Belum ada kode soal di sheet.</td></tr>'; return; }
+  const lama = PREV; PREV = {};
+  DATA.forEach(d => PREV[d.kode] = d.status);
+  tb.innerHTML = DATA.map((d, i) => {
+    const beku = d.status === 'BEKU';
+    const anim = !lama ? ' baru' : (lama[d.kode] !== undefined && lama[d.kode] !== d.status ? ' berubah' : '');
+    return '<tr style="--i:' + Math.min(i, 12) + '" class="' + (beku ? 'beku' : '') + anim + '">' +
+      '<td><input type="checkbox" class="pilih" value="' + esc(d.kode) + '" aria-label="Pilih ' + esc(d.kode) + '"></td>' +
+      '<td class="kode">' + esc(d.kode) + '</td>' +
+      '<td>' + esc(d.nama) + '</td>' +
+      '<td>' + d.jumlah + '</td>' +
+      '<td><span class="lencana ' + (beku ? 'beku' : 'aktif') + '">' + (beku ? 'Beku' : 'Aktif') + '</span></td>' +
+      '<td class="sisa" data-sampai="' + (d.sampai || 0) + '">' + (beku ? (d.sampai ? '' : 'sampai dilepas') : '') + '</td></tr>';
+  }).join('');
+  $('semua').checked = false;
+  tick();
+}
+
+function tick(){
+  const now = Date.now() + OFFSET;
+  let habis = false;
+  document.querySelectorAll('.sisa').forEach(td => {
+    const t = Number(td.dataset.sampai);
+    if (!t) return;
+    const sisa = t - now;
+    td.textContent = fmtSisa(sisa);
+    td.classList.toggle('mepet', sisa > 0 && sisa < 60000);
+    if (sisa <= -3000) habis = true;
+  });
+  if (habis && !sibuk) muat(true);
+  ringkas();
+}
+
+async function muat(diam){
+  sibuk = true;
+  try {
+    const r = await api({ action: 'adminListBeku' });
+    if (!r.success){
+      if (!diam) pesan(r.message || 'Gagal memuat data.', 'err');
+      if (/password/i.test(r.message || '')){ $('panel').classList.add('hide'); $('boxLogin').classList.remove('hide'); if (!diam) goyang(); }
+      return false;
+    }
+    DATA = r.kode; OFFSET = r.serverNow - Date.now();
+    tampilPanel();
+    gambar();
+    return true;
+  } catch (e){
+    if (!diam) pesan('Tidak bisa terhubung ke server: ' + e.message, 'err');
+    return false;
+  } finally { sibuk = false; }
+}
+
+function fmtLokal(d){
+  const p = n => String(n).padStart(2, '0');
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+// selisih ke waktu server (menit, dibulatkan ke atas) — backend tetap menerima parameter "menit"
+function menitDariTanggal(){
+  const v = $('sampai').value;
+  if (!v) return null;
+  const t = new Date(v).getTime();
+  if (isNaN(t)) return null;
+  return Math.ceil((t - (Date.now() + OFFSET)) / 60000);
+}
+function fmtDurasi(m){
+  const h = Math.floor(m / 1440), j = Math.floor(m % 1440 / 60), mm = m % 60, a = [];
+  if (h) a.push(h + ' hari'); if (j) a.push(j + ' jam'); if (mm) a.push(mm + ' menit');
+  return a.join(' ');
+}
+function ringkas(){
+  const el = $('ringkas'), inp = $('sampai');
+  const mn = fmtLokal(new Date(Date.now() + OFFSET));
+  if (inp.min !== mn) inp.min = mn;
+  const m = menitDariTanggal();
+  if (m === null){ el.textContent = ''; return; }
+  if (m < 1){ el.textContent = 'Waktu itu sudah lewat. Pilih waktu yang lebih akhir.'; el.className = 'ringkas salah'; return; }
+  el.className = 'ringkas';
+  el.textContent = 'Beku sampai ' + new Date(inp.value).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' (' + fmtDurasi(m) + ' lagi)';
+}
+
+function terpilih(){ return [...document.querySelectorAll('.pilih:checked')].map(c => c.value); }
+
+async function aksi(action, extra, label, btn){
+  const pilih = terpilih();
+  if (!pilih.length){ pesan('Centang minimal satu kode.', 'err'); goyangEl($('tabel')); return; }
+  document.querySelectorAll('button').forEach(b => b.disabled = true);
+  if (btn) btn.classList.add('memuat');
+  sibuk = true;
+  let berhasil = 0, gagal = [];
+  for (const kode of pilih){
+    try {
+      const r = await api(Object.assign({ action, kode }, typeof extra === 'function' ? extra() : extra));
+      if (r.success) berhasil++; else gagal.push(kode + ': ' + r.message);
+    } catch (e){ gagal.push(kode + ': ' + e.message); }
+  }
+  document.querySelectorAll('button').forEach(b => b.disabled = false);
+  if (btn) btn.classList.remove('memuat');
+  sibuk = false;
+  await muat(true);
+  if (gagal.length) pesan(label + ': ' + berhasil + ' berhasil, gagal → ' + gagal.join('; '), 'err');
+  else pesan(label + ': ' + berhasil + ' kode berhasil.', 'ok');
+}
+
+$('btnMasuk').onclick = async () => {
+  PASS = $('pass').value;
+  if (!PASS){ pesan('Isi password admin.', 'err'); goyang(); return; }
+  const b = $('btnMasuk'); b.disabled = true; b.classList.add('memuat');
+  pesan('Memeriksa…');
+  const ok = await muat();
+  b.disabled = false; b.classList.remove('memuat');
+  if (ok){
+    pesan('Berhasil masuk.', 'ok');
+    setTimeout(() => { if ($('pesan').textContent === 'Berhasil masuk.') pesan(''); }, 2200);
+  }
+};
+$('pass').addEventListener('input', () => $('pass').classList.remove('salah'));
+$('pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('btnMasuk').click(); });
+$('btnBeku').onclick      = () => aksi('adminBeku',  {},                          'Dibekukan', $('btnBeku'));
+$('btnBekuWaktu').onclick = () => {
+  const m = menitDariTanggal(), kotak = $('sampai').parentElement;
+  if (m === null){ pesan('Pilih tanggal dan jam berakhirnya beku.', 'err'); goyangEl(kotak); return; }
+  if (m < 1){ pesan('Waktu berakhir harus lebih lambat dari sekarang.', 'err'); goyangEl(kotak); return; }
+  aksi('adminBeku', () => ({ menit: Math.max(1, menitDariTanggal() || 1) }), 'Dibekukan sementara', $('btnBekuWaktu'));
+};
+$('btnLepas').onclick     = () => aksi('adminLepas', {},                          'Dilepas', $('btnLepas'));
+$('btnRefresh').onclick   = async () => { const b = $('btnRefresh'); b.classList.add('memuat'); await muat(); b.classList.remove('memuat'); };
+$('isi').addEventListener('click', e => {
+  const tr = e.target.closest('tr'), c = tr && tr.querySelector('.pilih');
+  if (c && !e.target.matches('input')) c.checked = !c.checked;
+});
+$('semua').onchange = e => document.querySelectorAll('.pilih').forEach(c => c.checked = e.target.checked);
+
+$('sampai').value = fmtLokal(new Date(Date.now() + 3600000));
+$('sampai').addEventListener('input', ringkas);
+setInterval(tick, 1000);
+setInterval(() => { if (PASS && !sibuk) muat(true); }, 60000);
+</script>
+</body>
+</html>
